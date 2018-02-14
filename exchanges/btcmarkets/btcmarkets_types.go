@@ -1,5 +1,10 @@
 package btcmarkets
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // Response is the genralized response type
 type Response struct {
 	Success      bool   `json:"success"`
@@ -105,4 +110,33 @@ type WithdrawRequestAUD struct {
 	AccountNumber string `json:"accountNumber"`
 	BankName      string `json:"bankName"`
 	BSBNumber     string `json:"bsbNumber"`
+}
+
+// WebsocketOrder holds websocket order information
+type WebsocketOrder struct {
+	Price  int64
+	Volume int64
+}
+
+func (tp *WebsocketOrder) UnmarshalJSON(data []byte) error {
+	var v []interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		fmt.Printf("Error whilde decoding %v\n", err)
+		return err
+	}
+	tp.Price = int64(v[0].(float64))
+	tp.Volume = int64(v[0].(float64))
+
+	return nil
+}
+
+// WebsocketOrderbok holds websocket order book information
+type WebsocketOrderbok struct {
+	Currency   string           `json:"currency"`
+	Instrument string           `json:"instrument"`
+	Timestamp  int64            `json:"timestamp"`
+	MarketID   int              `json:"marketId"`
+	SnapshotId int64            `json:"snapshotId"`
+	Bids       []WebsocketOrder `json:"bids"`
+	Asks       []WebsocketOrder `json:"asks"`
 }

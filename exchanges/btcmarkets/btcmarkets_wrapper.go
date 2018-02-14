@@ -19,6 +19,7 @@ func (b *BTCMarkets) Start() {
 // Run implements the BTC Markets wrapper
 func (b *BTCMarkets) Run() {
 	if b.Verbose {
+		log.Printf("%s Websocket: %s.", b.GetName(), common.IsEnabled(b.Websocket))
 		log.Printf("%s polling delay: %ds.\n", b.GetName(), b.RESTPollingDelay)
 		log.Printf("%s %d currencies enabled: %s.\n", b.GetName(), len(b.EnabledPairs), b.EnabledPairs)
 	}
@@ -47,6 +48,10 @@ func (b *BTCMarkets) Run() {
 			log.Printf("%s Failed to get config.\n", b.GetName())
 			return
 		}
+	}
+
+	if b.Websocket {
+		go b.WebsocketClient()
 	}
 }
 
