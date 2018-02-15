@@ -41,7 +41,10 @@ func (b *BTCMarkets) OnConnect(output chan socketio.Message) {
 			if b.Verbose {
 				log.Printf("%s Websocket subscribing to channel: %s.", b.GetName(), channel)
 			}
-			output <- socketio.CreateMessageEvent("subscribe", channel, b.OnMessage, BTCMarketsSocket.Version)
+
+			//TODO:
+			//output <- socketio.CreateMessageEvent("subscribe", channel, b.OnMessage, BTCMarketsSocket.Version)
+			output <- socketio.CreateMessageEvent("join", channel, b.OnMessage, BTCMarketsSocket.Version)
 		}
 	}
 }
@@ -77,13 +80,16 @@ func (b *BTCMarkets) OnMessage(message []byte, output chan socketio.Message) {
 // }
 
 func (b *BTCMarkets) OnOrderbook(message []byte, output chan socketio.Message) {
+	log.Printf("%s Websocket orderbook event", b.GetName())
 	orderbook := WebsocketOrderbok{}
-	err := common.JSONDecode(message, &orderbook)
 
+	err := common.JSONDecode(message, &orderbook)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	log.Printf("%s Websocket orderbook: %+v\n", b.GetName(), orderbook)
 }
 
 // func (b *BTCMarkets) OnTrade(message []byte, output chan socketio.Message) {

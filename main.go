@@ -126,8 +126,10 @@ func main() {
 
 	log.Println("Starting websocket handler")
 	go WebsocketHandler()
-	go TickerUpdaterRoutine()
-	go OrderbookUpdaterRoutine()
+
+	//TODO:
+	//	go TickerUpdaterRoutine()
+	//	go OrderbookUpdaterRoutine()
 
 	if bot.config.Webserver.Enabled {
 		listenAddr := bot.config.Webserver.ListenAddress
